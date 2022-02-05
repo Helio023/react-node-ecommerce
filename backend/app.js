@@ -11,6 +11,7 @@ app.use(express.json({ limit: '10kb' }));
 app.use('/api/ecommerce', require('./src/routes/authRoutes'));
 app.use('/api/ecommerce', require('./src/routes/userRoutes'));
 app.use('/api/ecommerce', require('./src/routes/productRoutes'));
+app.use('/api/ecommerce', require('./src/routes/cartRoutes'));
 
 app.use(erorController);
 module.exports = app;

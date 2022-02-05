@@ -12,7 +12,7 @@ router.route('/products').get(getAllProducts);
 router
   .route('/products/:id')
   .get(getProduct)
-  .post(protectAdmin, updateProduct)
+  .patch(protectAdmin, updateProduct)
   .delete(protectAdmin, deleteProduct);
 router.route('/products').post(protectAdmin, createProduct);
 
