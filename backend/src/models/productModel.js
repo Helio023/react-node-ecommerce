@@ -18,6 +18,8 @@ const productSchema = new mongoose.Schema(
     size: {
       type: String,
       required: true,
+      enum: ['M', 'S', 'XL', 'L'],
+      default: "S"
     },
     image: {
       type: String,
