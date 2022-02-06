@@ -12,14 +12,14 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     color: {
-      type: String,
+      type: Array,
       required: true,
     },
     size: {
-      type: String,
+      type: Array,
       required: true,
-      enum: ['M', 'S', 'XL', 'L'],
-      default: "S"
+      // enum: ['M', 'S', 'XL', 'L'],
+      // default: "S"
     },
     image: {
       type: String,
@@ -30,6 +30,10 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     categories: Array,
+    inStock: {
+      type: Boolean,
+      default: true
+    }
   },
   {
     timestamps: true,
