@@ -4,6 +4,12 @@ import Footer from '../../components/Footer/Footer';
 import Header from '../../components/Header/Header';
 import Navbar from '../../components/Navbar/Navbar';
 import { Add, Remove } from '@mui/icons-material';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { publicRequest } from '../../../makeRequest';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addProduct } from '../../redux/cartRedux';
 
 const Container = styled.div``;
 const Wrapper = styled.div`
@@ -117,6 +123,37 @@ const RemoveBtn = styled(Remove)`
 `;
 
 const ProductDetails = () => {
+  const location = useLocation();
+  const id = location.pathname.split('/')[2];
+  const [product, setProduct] = useState({});
+  const [quantity, setQuantity] = useState(1);
+  const [color, setColor] = useState('');
+  const [size, setSize] = useState('');
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    publicRequest
+      .get(`products/${id}`)
+      .then((res) => setProduct(res.data.product));
+  }, [id]);
+
+  const handleAddQuantity = () => {
+    setQuantity((prevQuantity) => prevQuantity + 1);
+  };
+
+  const handleRemoveQuantity = () => {
+    if (quantity === 1) {
+      return;
+    } else {
+      setQuantity((prevQuantity) => prevQuantity - 1);
+    }
+  };
+
+  const handleAddToCart = () => {
+    dispatch(addProduct({...product, quantity, size, color}))
+   
+  }
+
   return (
     <Container>
       <Header>
@@ -124,45 +161,37 @@ const ProductDetails = () => {
         <Anouncement />
         <Wrapper>
           <ProductImage>
-            <Image src='https://i.ibb.co/Rzg7qp5/pexels-godisable-jacob-1024032-removebg.png' />
+            <Image src={product.image} />
           </ProductImage>
           <ProductInfo>
-            <Title>Product name</Title>
-            <Description>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis,
-              velit tenetur. Consequatur asperiores numquam inventore doloremque
-              perspiciatis at veniam, fugit optio, quae adipisci corporis,
-              tempora ipsam cum. Corrupti, ut ab.
-            </Description>
-            <Price>$ 20</Price>
+            <Title>{product.title}</Title>
+            <Description>{product.description}</Description>
+            <Price>$ {product.price}</Price>
             <FilterContainer>
               <ColorFilter>
                 <FilterTitle>color</FilterTitle>
-                <Color color='red' />
-                <Color color='blue' />
-                <Color color='yellow' />
+                {product.color?.map((c) => (
+                  <Color color={c} key={c} onClick={() => setColor(c)} />
+                ))}
               </ColorFilter>
 
               <SizeFilter>
                 <FilterTitle>Size</FilterTitle>
-                <Select>
-                  <Option disabled selected>
-                    Sizes
-                  </Option>
-                  <Option>XS</Option>
-                  <Option>S</Option>
-                  <Option>M</Option>
-                  <Option>L</Option>
-                  <Option>XL</Option>
+                <Select onChange={(e) => setSize(e.target.value)}>
+                  <Option disabled>Sizes</Option>
+                  {product.size?.map((s) => (
+                    <Option key={s}>{s}</Option>
+                  ))}
                 </Select>
               </SizeFilter>
             </FilterContainer>
             <ProductToCard>
               <AddRemoveBts>
-                <RemoveBtn />
-                <Quantity>1</Quantity> <AddBtn />
+                <RemoveBtn onClick={handleRemoveQuantity} />
+                <Quantity>{quantity}</Quantity>
+                <AddBtn onClick={handleAddQuantity} />
               </AddRemoveBts>
-              <Button>Add to cart</Button>
+              <Button onClick={handleAddToCart}>Add to cart</Button>
             </ProductToCard>
           </ProductInfo>
         </Wrapper>

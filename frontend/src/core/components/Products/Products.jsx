@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { popularProducts } from '../../utils/data';
 import SectionHeader from '../SectionHeader/SectionHeader';
 import Product from './Product/Product';
+import { publicRequest } from '../../../makeRequest';
 
 const Container = styled.div`
   padding: 50px 30px;
@@ -13,13 +15,25 @@ const ProductList = styled.div`
   justify-content: space-between;
 `;
 
-const Products = () => {
+const Products = ({ category, filters, sort }) => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    category
+      ? publicRequest
+          .get(`/products?category=${category}`)
+          .then((res) => setProducts(res.data.products))
+      : publicRequest
+          .get('/products')
+          .then((res) => setProducts(res.data.products));
+  }, [category]);
+
   return (
     <Container>
       <SectionHeader text='Popular products' />
       <ProductList>
-        {popularProducts.map((item) => (
-          <Product item={item} key={item.id} />
+        {products.map((item) => (
+          <Product item={item} key={item._id} />
         ))}
       </ProductList>
     </Container>

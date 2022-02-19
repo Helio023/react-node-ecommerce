@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { SearchOutlined, MailOutline } from '@mui/icons-material';
 import { Badge } from '@mui/material';
 import WebLogo from '../../Logo/Logo';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 // Styles
 
@@ -68,6 +70,8 @@ const MailIcon = styled(MailOutline)`
 
 //Component
 const Navbar = () => {
+  const quantity = useSelector(state => state.cart.quantity)
+ 
   return (
     <Nav>
       <NavLeft>
@@ -84,11 +88,13 @@ const Navbar = () => {
         <Menu>
           <MenuItem>Register</MenuItem>
           <MenuItem>Login</MenuItem>
+          <Link to="/cart">
           <MenuItem>
-            <Badge badgeContent={4} color='primary'>
+            <Badge badgeContent={quantity} color='primary'>
               <MailIcon />
             </Badge>
           </MenuItem>
+          </Link>
         </Menu>
       </NavRight>
     </Nav>

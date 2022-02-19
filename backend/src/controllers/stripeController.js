@@ -1,18 +1,18 @@
-const stripe = require('stripe')(process.env.STRIPE_KEY)
+const stripe = require('stripe')(process.env.STRIPE_KEY);
 const ErrorResponse = require('../utils/ErrorResponse');
 
 exports.addPayment = async (req, res, next) => {
   const { tokenId, amount } = req.body;
-  await stripe.charges.create(
+  stripe.charges.create(
     {
-      tokenId,
+      source: tokenId,
       amount,
       currency: 'usd',
     },
-    (err, res) => {
-      if (err) {
+    (stripeErr, stripeRes) => {
+      if (stripeErr) {
         return next(new ErrorResponse('Failed to make the payment', 500));
-      } else {
+      } else if (stripeRes) {
         res.status(200).json({
           status: 'success',
           res,
